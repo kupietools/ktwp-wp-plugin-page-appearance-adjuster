@@ -1,0 +1,104 @@
+.page-adjuster-control {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    z-index: 9999;
+}
+.page-adjuster-icon {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    background: #808080;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.page-adjuster-icon .hover-text {
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #808080;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.page-adjuster-icon:hover .hover-text {
+	opacity: 1;
+	width: 130px;
+	text-align: center;
+}
+
+.page-adjuster-icon svg {
+    color: white;
+}
+
+.page-adjuster-panel {
+    display: none;
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    width: 250px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 15px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.control-group input[type="range"] {
+    width: 100%;
+}
+
+.setting-row {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.setting-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+    cursor: pointer;
+}
+
+#darkmode-toggle {
+    cursor: pointer;
+}
