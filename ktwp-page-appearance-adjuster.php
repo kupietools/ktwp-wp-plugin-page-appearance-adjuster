@@ -49,7 +49,7 @@ function page_adjuster_add_control_panel() {
                     <input type="range" id="temperature" min="-50" max="50" value="0">
                 </div>
 				<div class="control-group">
-					<label for="hue">Hue Rotation <span class="value">0¨¬</span></label>
+					<label for="hue">Hue Rotation <span class="value">0ï¿½ï¿½</span></label>
     <input type="range" id="hue" min="0" max="360" value="0">
     
 </div><div class="control-group">
