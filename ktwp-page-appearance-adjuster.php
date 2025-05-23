@@ -30,7 +30,7 @@ function page_adjuster_add_control_panel() {
     <span class="hover-text">Visual Settings</span>
 </div>
 
-        <div class="page-adjuster-panel">
+        <div class="page-adjuster-panel test">
             <div class="panel-header">
                 <span>Page Appearance</span>
                 <button class="close-button">&times;</button>
@@ -126,6 +126,7 @@ function page_adjuster_activate() {
     width: 0;
     overflow: hidden;
     transition: all 0.3s ease;
+	
 }
 
 .page-adjuster-icon:hover .hover-text {
@@ -148,6 +149,10 @@ function page_adjuster_activate() {
     border-radius: 5px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     padding: 15px;
+		max-width: 90vw;
+max-height: 46vh;
+overflow-y: auto;
+			/* those last 3 for iOS */
 }
 
 .panel-header {
@@ -211,7 +216,7 @@ CSS;
         mkdir($js_dir, 0755, true);
     }
     
-    $js_content = <<<JS
+    $js_content = <<<'JS'
 (function($) {
     'use strict';
     loadSettings();
@@ -526,8 +531,15 @@ function applyFilters() {
             img.style.filter = isDarkMode ? 'invert(1) hue-rotate(180deg)' : '';
         }
     }
-	
+	let earthquakeTimeout;
 	function applyEarthquake() {
+		console.log("apply ",Date.now());
+		clearTimeout(earthquakeTimeout);
+		earthquakeTimeout = setTimeout(applyEarthquakeBody,250);
+
+}
+	function applyEarthquakeBody() {
+				console.log("apply body ",Date.now());
     const intensity = document.getElementById('earthquake').value;
     const style = document.getElementById('earthquake-style') || document.createElement('style');
     style.id = 'earthquake-style';
@@ -559,7 +571,6 @@ body > *:not(.page-adjuster-control)  {
     }
 		return intensity;
 }
-	
 	$(document).ready(function() {
         $('.page-adjuster-icon').on('click', function(e) {
             e.preventDefault();

@@ -1,5 +1,7 @@
 (function($) {
     'use strict';
+		let earthquakeTimeout;
+	    let earthquakeTimer=Date.now()
     loadSettings();
    
 
@@ -267,9 +269,93 @@ function applyFilters() {
         }
     }
 	
+	function XapplyEarthquake() {
+		if(Date.now()-earthquakeTimer>1000){
+		console.log("earthquake setting change ",Date.now());
+		clearTimeout(earthquakeTimeout);
+		earthquakeTimeout = setTimeout(applyEarthquakeBody,1000);
+			earthquakeTimer=Date.now();
+		} else{console.log("not yet ",Date.now()-earthquakeTimer);}
+
+}
 	function applyEarthquake() {
     const intensity = document.getElementById('earthquake').value;
     const style = document.getElementById('earthquake-style') || document.createElement('style');
+    style.id = 'earthquake-style';
+
+    // Always ensure the style tag exists and has the base keyframes
+    if (!style.parentElement) {
+        document.head.appendChild(style);
+        // Define base keyframes with CSS variables (only once)
+        style.innerHTML = `
+            @keyframes earthquake {
+                0%, 100% { transform: translate(0, 0) rotate(0deg); transform-origin: 50vw 200vh; }
+                25% { transform: translate(calc(var(--shake-x) * -1), var(--shake-y)) rotate(var(--shake-deg)); transform-origin: 50vw 200vh;}
+                50% { transform: translate(var(--shake-x), calc(var(--shake-y) * -1)) rotate(calc(var(--shake-deg) * -1)); transform-origin: 50vw 200vh; }
+                75% { transform: translate(calc(var(--shake-x) * -1), calc(var(--shake-y) * -1)) rotate(var(--shake-deg)); transform-origin: 50vw 200vh;}
+            }
+
+            /* No 'animation' property here directly, we'll set it inline or via a specific class */
+            .do-earthquake-parent {
+                animation: earthquake 0.83s infinite;
+                -webkit-animation: earthquake 0.83s infinite;
+                will-change: transform;
+            }
+            .do-earthquake-child {
+                animation: earthquake 0.25s infinite;
+                -webkit-animation: earthquake 0.25s infinite;
+                will-change: transform;
+            }
+        `;
+    }
+
+    const animatedParents = document.querySelectorAll('body > *:not(.page-adjuster-control)');
+    const animatedChildren = document.querySelectorAll('body > *:not(.page-adjuster-control) > *');
+
+    if (intensity === "0") {
+        // Clear properties and classes
+        document.documentElement.style.removeProperty('--shake-x');
+        document.documentElement.style.removeProperty('--shake-y');
+        document.documentElement.style.removeProperty('--shake-deg');
+        animatedParents.forEach(el => el.classList.remove('do-earthquake-parent'));
+        animatedChildren.forEach(el => el.classList.remove('do-earthquake-child'));
+    } else {
+        const shake = (Math.max(Math.log10(intensity),0)) ** 15 * 16;
+        document.documentElement.style.setProperty('--shake-x', `${shake}px`);
+        document.documentElement.style.setProperty('--shake-y', `${shake}px`);
+        document.documentElement.style.setProperty('--shake-deg', `${shake}deg`);
+
+        // 1. Pause existing animations and remove the class
+        animatedParents.forEach(el => {
+            el.style.animationPlayState = 'paused';
+            el.classList.remove('do-earthquake-parent');
+        });
+        animatedChildren.forEach(el => {
+            el.style.animationPlayState = 'paused';
+            el.classList.remove('do-earthquake-child');
+        });
+
+        // 2. Force reflow (clears animation state)
+        void document.body.offsetHeight;
+
+        // 3. Re-add the class and resume animation in next tick
+        requestAnimationFrame(() => {
+            animatedParents.forEach(el => {
+                el.classList.add('do-earthquake-parent');
+                el.style.animationPlayState = ''; // Resume (or remove property)
+            });
+            animatedChildren.forEach(el => {
+                el.classList.add('do-earthquake-child');
+                el.style.animationPlayState = ''; // Resume (or remove property)
+            });
+            void document.body.offsetHeight; // Final reflow
+        });
+    }
+    return intensity;
+}
+	function XapplyEarthquakeBody() {
+    const intensity = document.getElementById('earthquake').value;
+	const style = document.getElementById('earthquake-style')||document.createElement('style');
     style.id = 'earthquake-style';
       
     if (intensity === "0") {
@@ -286,17 +372,27 @@ function applyFilters() {
             }
 
             body > *:not(.page-adjuster-control) > * {
+  will-change: transform;
                 animation: earthquake 0.25s infinite;
             }
 body > *:not(.page-adjuster-control)  {
+  will-change: transform;
                 animation: earthquake 0.83s infinite;
             }
         `;
     }
     
-    if (!style.parentElement) {
+   if (!style.parentElement) {
         document.head.appendChild(style);
     }
+		 
+   /* // Delay the reflow slightly
+    setTimeout(() => {
+        if (style.parentElement) {
+            void document.body.offsetHeight;
+        }
+    }, 10); // A small delay, e.g., 10ms
+    */
 		return intensity;
 }
 	
