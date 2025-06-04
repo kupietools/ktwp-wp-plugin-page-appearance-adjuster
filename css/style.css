@@ -158,7 +158,7 @@ overflow-y: auto;
 }
 .page-adjuster-icon:hover {
 	background: #ffd;
-	box-shadow: 0px 0px 16px #fff !important;
+	/* box-shadow: 0px 0px 16px #fff !important; Nah */
 }
 .page-adjuster-icon .hover-text {
     position: absolute;
