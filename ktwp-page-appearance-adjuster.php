@@ -30,30 +30,30 @@ function page_adjuster_add_control_panel() {
     <span class="hover-text">Visual Settings</span>
 </div>
 
-        <div class="page-adjuster-panel test">
+        <div ID="ktwp-paa-page-adjuster-panel" class="page-adjuster-panel">
             <div class="panel-header">
                 <span>Page Appearance</span>
                 <button class="close-button">&times;</button>
             </div>
             <div class="panel-content">
                 <div class="control-group">
-                    <label for="brightness">Brightness</label>
+                    <label for="brightness">Brightness <span class="value">100%</span></label>
                     <input type="range" id="brightness" min="50" max="150" value="100">
                 </div>
                 <div class="control-group">
-                    <label for="contrast">Contrast</label>
+                    <label for="contrast">Contrast <span class="value">100%</span></label>
                     <input type="range" id="contrast" min="50" max="150" value="100">
                 </div>
                 <div class="control-group">
-                    <label for="temperature">Color Temperature</label>
+                    <label for="temperature">Color Temperature <span class="value"></span></label>
                     <input type="range" id="temperature" min="-50" max="50" value="0">
                 </div>
 				<div class="control-group">
-					<label for="hue">Hue Rotation <span class="value">0��</span></label>
+					<label for="hue">Hue Rotation <span class="value">0째</span></label>
     <input type="range" id="hue" min="0" max="360" value="0">
     
 </div><div class="control-group">
-					<label for="saturation">Saturation <span class="value">200</span></label>
+					<label for="saturation">Saturation <span class="value">100%</span></label>
     <input type="range" id="saturation" min="0" max="200" value="0">
     
 </div>
@@ -80,6 +80,9 @@ function page_adjuster_add_control_panel() {
 			<button id="reset-button" style="width: 100%; padding: 8px; background: #808080; color: white; border: none; border-radius: 3px; cursor: pointer; margin-top: 10px;">Reset to Default</button>
         </div>
     </div>
+<script>
+	['mousedown','dragstart','touchstart','touchmove','click'].forEach(thisAction => {
+document.getElementById("ktwp-paa-page-adjuster-panel").addEventListener(thisAction, function(event) {console.log('Click event on the element',event); event.stopPropagation();});});</script>
     <?php
 }
 add_action('wp_footer', 'page_adjuster_add_control_panel');
@@ -276,7 +279,7 @@ CSS;
             } else if (slider.id === 'earthquake') {
                 valueDisplay.textContent = parseFloat(slider.value).toFixed(1);
             } else  if (slider.id === 'hue') {
-                valueDisplay.textContent = slider.value + '°';
+                valueDisplay.textContent = slider.value + '째';
             } else {
                 valueDisplay.textContent = slider.value + '%';
             }
@@ -722,4 +725,4 @@ $('.page-adjuster-icon').click(function(e) {
     
     file_put_contents($js_dir . '/script.js', $js_content);
 }
-register_activation_hook(__FILE__, 'page_adjuster_activate');
+/* register_activation_hook(__FILE__, 'page_adjuster_activate'); */

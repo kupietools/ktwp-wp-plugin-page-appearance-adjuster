@@ -13,7 +13,7 @@
             } else if (slider.id === 'earthquake') {
                 valueDisplay.textContent = parseFloat(slider.value).toFixed(1);
             } else  if (slider.id === 'hue') {
-                valueDisplay.textContent = slider.value + '°';
+                valueDisplay.textContent = slider.value + '째';
             } else {
                 valueDisplay.textContent = slider.value + '%';
             }
@@ -27,6 +27,7 @@
             brightness: "100",
             contrast: "100",
             temperature: "0",
+			saturation:"100",
             hue: "0",
             darkMode: false,
             fontSize: undefined,
@@ -39,6 +40,7 @@
 
         if (settings.brightness === defaults.brightness && 
             settings.contrast === defaults.contrast &&
+            settings.saturation === defaults.saturation &&
             settings.temperature === defaults.temperature &&
             settings.hue === defaults.hue &&
             settings.darkMode === defaults.darkMode &&
@@ -46,6 +48,7 @@
             settings.earthquake === defaults.earthquake) {
                 
             document.getElementById('brightness').value = defaults.brightness;
+            document.getElementById('saturation').value = defaults.saturation;
             document.getElementById('contrast').value = defaults.contrast;
             document.getElementById('temperature').value = defaults.temperature;
             document.getElementById('hue').value = defaults.hue;
@@ -59,6 +62,7 @@
 
         document.getElementById('brightness').value = settings.brightness || defaults.brightness;
         document.getElementById('contrast').value = settings.contrast || defaults.contrast;
+        document.getElementById('saturation').value = settings.saturation || defaults.saturation;
         document.getElementById('temperature').value = settings.temperature || defaults.temperature;
         document.getElementById('hue').value = settings.hue || defaults.hue;
         document.getElementById('darkmode-toggle').checked = settings.darkMode || defaults.darkMode;
@@ -81,6 +85,7 @@
             brightness: document.getElementById('brightness').value,
             contrast: document.getElementById('contrast').value,
             temperature: document.getElementById('temperature').value,
+            saturation: document.getElementById('saturation').value,
             hue: document.getElementById('hue').value,
             darkMode: document.getElementById('darkmode-toggle').checked,
             fontSize: document.getElementById('fontsize').value,
@@ -140,11 +145,12 @@ function applyFilters() {
     const brightness = document.getElementById('brightness').value;
     const contrast = document.getElementById('contrast').value;
     const temperature = document.getElementById('temperature').value;
+    const saturation = document.getElementById('saturation').value;
     const hue = document.getElementById('hue').value;
     const isDarkMode = document.getElementById('darkmode-toggle').checked;
     
     let tempValue = parseInt(temperature);
-    let filterString = "brightness("+brightness+"%) contrast("+contrast+"%) ";
+    let filterString = "brightness("+brightness+"%) contrast("+contrast+"%) saturate("+saturation+"%) ";
     
 	
 	 const earthquake = document.getElementById('earthquake').value;
@@ -170,6 +176,7 @@ function applyFilters() {
         overlay.style.height = '100%';
         overlay.style.pointerEvents = 'none';
         overlay.style.mixBlendMode = 'color';
+		
        // overlay.style.transition = 'background-color 0.2s';
         document.body.appendChild(overlay);
     }
@@ -179,13 +186,16 @@ function applyFilters() {
         let warmth = Math.abs(tempValue);// * 0.7;
         filterString += "sepia("+warmth+"%) saturate("+(100 + warmth * 0.3)+"%)";
         overlay.style.backgroundColor = 'transparent';
+		overlay.style.zIndex="0";
     } else if (tempValue > 0) {
         // Cool (blue) tint using overlay
         let coolness = tempValue * 0.5;
         let blueAmount = Math.min(255, Math.round(coolness * 2.55));
         overlay.style.backgroundColor = "rgba(0, "+(blueAmount*.5)+", "+blueAmount+", "+(coolness * 0.02)+")";// coolness * 0.01)";
+		overlay.style.zIndex="999999";
     } else {
         overlay.style.backgroundColor = 'transparent';
+		overlay.style.zIndex="0";
     }
     
     // Add base hue rotation if specified
@@ -309,8 +319,8 @@ function applyFilters() {
         `;
     }
 
-    const animatedParents = document.querySelectorAll('body > *:not(.page-adjuster-control)');
-    const animatedChildren = document.querySelectorAll('body > *:not(.page-adjuster-control) > *');
+    const animatedParents = document.querySelectorAll('body > *:not(.page-adjuster-control):not(.temperatureOverlay)');
+    const animatedChildren = document.querySelectorAll('body > *:not(.page-adjuster-control):not(.temperatureOverlay) > *');
 
     if (intensity === "0") {
         // Clear properties and classes
@@ -438,6 +448,7 @@ body > *:not(.page-adjuster-control)  {
             e.preventDefault();
             document.getElementById('brightness').value = 100;
             document.getElementById('contrast').value = 100;
+            document.getElementById('saturation').value = 100;
             document.getElementById('temperature').value = 0;
             document.getElementById('hue').value = 0;
             document.getElementById('darkmode-toggle').checked = false;
