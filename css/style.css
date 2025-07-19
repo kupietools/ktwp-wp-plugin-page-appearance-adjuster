@@ -131,7 +131,7 @@ overflow-y: auto;
 .page-adjuster-control {
     position: fixed;
     left: 0px;
-    top: 140px;
+    top: 92px;
     font-size: 14px !important;
     z-index: 10000 !important;
 	
@@ -176,7 +176,7 @@ overflow-y: auto;
     transition: all 0.3s ease;
 }
 
-.page-adjuster-icon:hover .hover-text {
+.page-adjuster-icon:hover .hover-text:not(*:hover) {
 	opacity: 1;
 	width: 130px;
 	text-align: center;
@@ -188,7 +188,7 @@ overflow-y: auto;
     /* ORIG bottom: 30px;
     left: 0; */
 top: 12px;
-    left: 12px;
+    left: 28px;
     width: 250px;
     background: white;
     border-radius: 5px;

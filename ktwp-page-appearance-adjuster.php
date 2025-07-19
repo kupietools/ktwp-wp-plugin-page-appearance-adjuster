@@ -21,7 +21,7 @@ add_action('wp_enqueue_scripts', 'page_adjuster_enqueue_assets');
 // Add the control panel HTML to the footer
 function page_adjuster_add_control_panel() {
     ?>
-    <div id="page-adjuster-control" class="page-adjuster-control">
+    <div id="page-adjuster-control" class="page-adjuster-control ktwp-kupietabs-tab-div">
        <div class="page-adjuster-icon">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"></circle>
@@ -80,9 +80,24 @@ function page_adjuster_add_control_panel() {
 			<button id="reset-button" style="width: 100%; padding: 8px; background: #808080; color: white; border: none; border-radius: 3px; cursor: pointer; margin-top: 10px;">Reset to Default</button>
         </div>
     </div>
-<script>
+<script id="ktwp_paa-inline-script">
 	['mousedown','dragstart','touchstart','touchmove','click'].forEach(thisAction => {
-document.getElementById("ktwp-paa-page-adjuster-panel").addEventListener(thisAction, function(event) {console.log('Click event on the element',event); event.stopPropagation();});});</script>
+document.getElementById("ktwp-paa-page-adjuster-panel").addEventListener(thisAction, function(event) { event.stopPropagation();});});
+
+
+const ktwp_paa_numOfKupieTabs=Math.max(document.getElementsByClassName("ktwp-kupietabs-tab-div").length-1,0); /* start at 0 so no offset from 130px */
+const ktwp_paa_thisTab=document.getElementById("page-adjuster-control");
+if(ktwp_paa_thisTab) {
+ktwp_paa_thisTab.style.top = (130+ ktwp_paa_numOfKupieTabs * 38) + "px";
+/* end move the new tab to stack under tabs from other KupieTools plugins */}
+
+</script>
+
+
+
+
+
+</script>
     <?php
 }
 add_action('wp_footer', 'page_adjuster_add_control_panel');
