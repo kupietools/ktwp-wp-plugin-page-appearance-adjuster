@@ -134,6 +134,7 @@ overflow-y: auto;
     top: 92px;
     font-size: 14px !important;
     z-index: 10000 !important;
+	display:none;
 	
 }
 

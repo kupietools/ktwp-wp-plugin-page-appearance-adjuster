@@ -21,7 +21,7 @@ add_action('wp_enqueue_scripts', 'page_adjuster_enqueue_assets');
 // Add the control panel HTML to the footer
 function page_adjuster_add_control_panel() {
     ?>
-    <div id="page-adjuster-control" class="page-adjuster-control ktwp-kupietabs-tab-div">
+    <div id="page-adjuster-control" class="page-adjuster-control">
        <div class="page-adjuster-icon">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"></circle>
@@ -85,10 +85,13 @@ function page_adjuster_add_control_panel() {
 document.getElementById("ktwp-paa-page-adjuster-panel").addEventListener(thisAction, function(event) { event.stopPropagation();});});
 
 
-const ktwp_paa_numOfKupieTabs=Math.max(document.getElementsByClassName("ktwp-kupietabs-tab-div").length-1,0); /* start at 0 so no offset from 130px */
+const ktwp_paa_numOfKupieTabs=document.getElementsByClassName("ktwp-kupietabs-tab-div").length; /* start at 0 so no offset from 130px */
 const ktwp_paa_thisTab=document.getElementById("page-adjuster-control");
+
 if(ktwp_paa_thisTab) {
-ktwp_paa_thisTab.style.top = (130+ ktwp_paa_numOfKupieTabs * 38) + "px";
+	ktwp_paa_thisTab.classList.add("ktwp-kupietabs-tab-div");
+	ktwp_paa_thisTab.style.top = (130+ ktwp_paa_numOfKupieTabs * 38) + "px";
+	ktwp_paa_thisTab.style.display = "block";
 /* end move the new tab to stack under tabs from other KupieTools plugins */}
 
 </script>
@@ -475,14 +478,14 @@ function applyFilters() {
     }
     
     if (isDarkMode) {
-        filterString += ' invert(1) hue-rotate(180deg)';
+        filterString += ' invert(1) hue-rotate(180deg) brightness(75%) contrast(150%) saturate(140%) ';
     }
     
     document.documentElement.style.filter = filterString;
     
     const images = document.getElementsByTagName('img');
     for (let img of images) {
-        img.style.filter = isDarkMode ? 'invert(1) hue-rotate(180deg)' : '';
+        img.style.filter = isDarkMode ? 'invert(1) hue-rotate(180deg) brightness(133%) contrast(66%) saturate(71%) ' : '';
     }
 }
 	function WorksapplyFiltersapplyFilters() {
@@ -510,14 +513,14 @@ function applyFilters() {
     }
     
     if (isDarkMode) {
-        filterString += ' invert(1) hue-rotate(180deg)';
+        filterString += ' invert(1) hue-rotate(180deg) brightness(75%) contrast(150%) saturate(140%) ';
     }
     
     document.documentElement.style.filter = filterString;
     
     const images = document.getElementsByTagName('img');
     for (let img of images) {
-        img.style.filter = isDarkMode ? 'invert(1) hue-rotate(180deg)' : '';
+        img.style.filter = isDarkMode ? 'invert(1) hue-rotate(180deg) ' : '';
     }
 }
 	

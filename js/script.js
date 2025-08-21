@@ -203,91 +203,43 @@ function applyFilters() {
         filterString += " hue-rotate("+hue+"deg)";
     }
     
-    if (isDarkMode) {
-        filterString += ' invert(1) hue-rotate(180deg)';
+  if (isDarkMode) {
+        filterString += ' brightness(75%) contrast(150%) saturate(140%) invert(1) hue-rotate(180deg)';
     }
     
-    document.documentElement.style.filter = filterString;
-    
-    const images = document.getElementsByTagName('img');
-    for (let img of images) {
-        img.style.filter = isDarkMode ? 'invert(1) hue-rotate(180deg)' : '';
-    }
-}
-	function WorksapplyFiltersapplyFilters() {
-    const brightness = document.getElementById('brightness').value;
-    const contrast = document.getElementById('contrast').value;
-    const temperature = document.getElementById('temperature').value;
-    const hue = document.getElementById('hue').value;
-    const isDarkMode = document.getElementById('darkmode-toggle').checked;
-    
-    let tempValue = parseInt(temperature);
-    let filterString = "brightness("+brightness+"%) contrast("+contrast+"%) "; 
-    
-    if (tempValue < 0) {
-        // Warm (amber/orange) tint: sepia for warmth
-        let warmth = Math.abs(tempValue) * 0.7;
-        filterString += "sepia("+warmth+"%) saturate("+(100 + warmth * 0.3)+"%)";
-    } else if (tempValue > 0) {
-        // Cool (blue) tint: direct blue hue rotation
-        filterString += "hue-rotate(200deg) saturate("+(100 + tempValue)+"%) sepia("+tempValue+"%) hue-rotate("+(-200 + tempValue)+"deg)";
-    }
-    
-    // Add base hue rotation if specified
-    if (hue !== "0") {
-        filterString += " hue-rotate("+hue+"deg)";
-    }
-    
-    if (isDarkMode) {
-        filterString += ' invert(1) hue-rotate(180deg)';
-    }
-    
-    document.documentElement.style.filter = filterString;
-    
-    const images = document.getElementsByTagName('img');
-    for (let img of images) {
-        img.style.filter = isDarkMode ? 'invert(1) hue-rotate(180deg)' : '';
-    }
-}
+ document.documentElement.style.filter = filterString;
 	
-    function zapplyFilters() {
-        const brightness = document.getElementById('brightness').value;
-        const contrast = document.getElementById('contrast').value;
-        const temperature = document.getElementById('temperature').value;
-        const hue = document.getElementById('hue').value;
-        const isDarkMode = document.getElementById('darkmode-toggle').checked;
-        
-        const warmth = temperature > 0 ? temperature / 50 : 0;
-        const coolness = temperature < 0 ? Math.abs(temperature) / 50 : 0;
-        
-        let filterString = 
-            'brightness(' + brightness + '%) ' +
-            'contrast(' + contrast + '%) ' +
-            'sepia(' + warmth + ') ' +
-            'brightness(' + (100 + warmth * 15) + '%) ' +
-            'hue-rotate(' + (coolness * -30 + parseInt(hue)) + 'deg)';
-        
-        if (isDarkMode) {
-            filterString += ' invert(1) hue-rotate(180deg)';
-        }
-        
-        document.documentElement.style.filter = filterString;
-        
-        const images = document.getElementsByTagName('img');
-        for (let img of images) {
-            img.style.filter = isDarkMode ? 'invert(1) hue-rotate(180deg)' : '';
-        }
-    }
-	
-	function XapplyEarthquake() {
-		if(Date.now()-earthquakeTimer>1000){
-		console.log("earthquake setting change ",Date.now());
-		clearTimeout(earthquakeTimeout);
-		earthquakeTimeout = setTimeout(applyEarthquakeBody,1000);
-			earthquakeTimer=Date.now();
-		} else{console.log("not yet ",Date.now()-earthquakeTimer);}
+/* this is all pretty inefficent, yes. To-do: make this run only when darkmode is toggled.Also, selectors to be exempt from inversion for darkmode should be a settings.  */
+   
+   
+    const images = document.querySelectorAll('img, *[style*="background-image:"]');
+    for (let img of images) {
+		if(img.getAttribute("data-ktwp-paa-imgOrigFilter")!=null && isDarkMode) /* already was in dark mode */
+{ 
+	img.style.filter = img.getAttribute("data-ktwp-paa-imgOrigFilter") + ' brightness(133%) contrast(66%) saturate(71%) invert(1) hue-rotate(180deg)' ;
+	  console.log("dm still on");
+} else if (isDarkMode && img.getAttribute("data-ktwp-paa-imgOrigFilter")==null) /* dark mode just turned on */
+{ img.setAttribute("data-ktwp-paa-imgOrigFilter",img.style.filter);
+	img.style.filter = img.getAttribute("data-ktwp-paa-imgOrigFilter")+' /* brightness(133%) contrast(66%) saturate(71%) */ invert(1) hue-rotate(180deg)  saturate(71%) contrast(66%) brightness(133%) ' ;
+  console.log("dm just turned on");
+}
+																			
+		else if(img.getAttribute("data-ktwp-paa-imgOrigFilter")!=null && !isDarkMode) /* dark mode just turned off */
+{	img.style.filter = img.getAttribute("data-ktwp-paa-imgOrigFilter");										
+									img.removeAttribute("data-ktwp-paa-imgOrigFilter");	
+ console.log("dm turned off");
+																			} else {  console.log("dm still off");}
+																			/* do nothing if not dark mode  and not just turned off*/
+																			
+																			
+/*        img.style.filter = (img.style.filter ?? "") + (isDarkMode ? ' brightness(133%) contrast(66%) saturate(71%) invert(1) hue-rotate(180deg)' : ''); */
 
 }
+
+
+
+}
+
 	function applyEarthquake() {
     const intensity = document.getElementById('earthquake').value;
     const style = document.getElementById('earthquake-style') || document.createElement('style');
