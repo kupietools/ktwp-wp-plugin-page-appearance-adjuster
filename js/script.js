@@ -364,7 +364,7 @@ body > *:not(.page-adjuster-control)  {
             $('.page-adjuster-panel').toggle();
         });
         
-        $('.close-button').on('click', function() {
+        $('.page-adjuster-close-button').on('click', function() {
             $('.page-adjuster-panel').hide();
         });
         

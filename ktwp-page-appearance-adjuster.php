@@ -33,7 +33,7 @@ function page_adjuster_add_control_panel() {
         <div ID="ktwp-paa-page-adjuster-panel" class="page-adjuster-panel">
             <div class="panel-header">
                 <span>Page Appearance</span>
-                <button class="close-button">&times;</button>
+                <button class="page-adjuster-close-button">&times;</button>
             </div>
             <div class="panel-content">
                 <div class="control-group">
@@ -187,7 +187,7 @@ overflow-y: auto;
 
 .panel-content {display:grid; grid-template-columns:auto auto; grid-column-gap:6px;}
 
-.close-button {
+.page-adjuster-close-button {
     background: none;
     border: none;
     font-size: 20px;
@@ -598,7 +598,7 @@ body > *:not(.page-adjuster-control)  {
             $('.page-adjuster-panel').toggle();
         });
         
-        $('.close-button').on('click', function() {
+        $('.page-adjuster-close-button').on('click', function() {
             $('.page-adjuster-panel').hide();
         });
         
@@ -721,7 +721,7 @@ $('.page-adjuster-icon').click(function(e) {
     $('.page-adjuster-panel').slideToggle(200);
 });  
         // Close panel
-        $('.close-button').click(function() {
+        $('.page-adjuster-close-button').click(function() {
             $('.page-adjuster-panel').slideUp(200);
         });
         

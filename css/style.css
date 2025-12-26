@@ -1,7 +1,7 @@
 .page-adjuster-icon svg {
   color: #1a1a1a;
   animation: gearPulse 1.25s linear infinite;
-  filter: drop-shadow( 1px 1px 2px rgba(255, 255, 0, .8));
+  /* NO! Prevents compositing filter: drop-shadow( 1px 1px 2px rgba(255, 255, 0, .8)); */
 }
 
 /* style sliders */
@@ -177,10 +177,12 @@ overflow-y: auto;
     transition: all 0.3s ease;
 }
 
+
 .page-adjuster-icon:hover .hover-text:not(*:hover) {
 	opacity: 1;
-	width: 130px;
+	min-width: 130px;
 	text-align: center;
+	width: fit-content;
 }
 
 .page-adjuster-panel {
@@ -208,10 +210,10 @@ top: 12px;
 
 .panel-content {display:grid; grid-template-columns:auto auto; grid-column-gap:6px;}
 
-.close-button {
+.page-adjuster-panel .page-adjuster-close-button {
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 24px !important;
     cursor: pointer;
     color: #666;
 }
