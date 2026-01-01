@@ -1,4 +1,4 @@
-(function($) {
+document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 		let earthquakeTimeout;
 	    let earthquakeTimer=Date.now()
@@ -13,7 +13,7 @@
             } else if (slider.id === 'earthquake') {
                 valueDisplay.textContent = parseFloat(slider.value).toFixed(1);
             } else  if (slider.id === 'hue') {
-                valueDisplay.textContent = slider.value + '째';
+                valueDisplay.textContent = slider.value + '°';
             } else {
                 valueDisplay.textContent = slider.value + '%';
             }
@@ -358,15 +358,34 @@ body > *:not(.page-adjuster-control)  {
 		return intensity;
 }
 	
-	$(document).ready(function() {
-        $('.page-adjuster-icon').on('click', function(e) {
-            e.preventDefault();
-            $('.page-adjuster-panel').toggle();
-        });
+	// REPLACED jQuery $(document).ready
+    // Since we are already inside 'DOMContentLoaded', we can just run the code.
+    
+        // REPLACED $('.page-adjuster-icon').on('click')
+        const icon = document.querySelector('.page-adjuster-icon');
+        if(icon) {
+            icon.addEventListener('click', function(e) {
+                e.preventDefault();
+                // REPLACED $('.page-adjuster-panel').toggle();
+                const panel = document.querySelector('.page-adjuster-panel');
+                if(panel) {
+                    if (window.getComputedStyle(panel).display === 'none') {
+                        panel.style.display = 'block';
+                    } else {
+                        panel.style.display = 'none';
+                    }
+                }
+            });
+        }
         
-        $('.page-adjuster-close-button').on('click', function() {
-            $('.page-adjuster-panel').hide();
-        });
+        // REPLACED $('.page-adjuster-close-button').on('click')
+        const closeBtn = document.querySelector('.page-adjuster-close-button');
+        if(closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                const panel = document.querySelector('.page-adjuster-panel');
+                if(panel) panel.style.display = 'none';
+            });
+        }
         
         const sliders = document.querySelectorAll('input[type="range"]');
         sliders.forEach(function(slider) {
@@ -396,41 +415,48 @@ body > *:not(.page-adjuster-control)  {
             saveSettings();
         });
         
-        $('#reset-button').on('click', function(e) {
-            e.preventDefault();
-            document.getElementById('brightness').value = 100;
-            document.getElementById('contrast').value = 100;
-            document.getElementById('saturation').value = 100;
-            document.getElementById('temperature').value = 0;
-            document.getElementById('hue').value = 0;
-            document.getElementById('darkmode-toggle').checked = false;
-            document.getElementById('earthquake').value = 0;
-            
-            const fontSizeStyle = document.getElementById('page-adjuster-font-size');
-            if (fontSizeStyle) {
-                fontSizeStyle.remove();
-            }
-            
-            document.documentElement.removeAttribute('data-page-adjuster');
-            
-            const computedSize = window.getComputedStyle(document.documentElement).fontSize;
-            const defaultSize = parseInt(computedSize);
-            const fontSlider = document.getElementById('fontsize');
-            fontSlider.value = defaultSize;
-            
-            applyFilters();
-            applyEarthquake();
-            saveSettings();
+        // REPLACED $('#reset-button').on('click')
+        const resetBtn = document.getElementById('reset-button');
+        if(resetBtn) {
+            resetBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('brightness').value = 100;
+                document.getElementById('contrast').value = 100;
+                document.getElementById('saturation').value = 100;
+                document.getElementById('temperature').value = 0;
+                document.getElementById('hue').value = 0;
+                document.getElementById('darkmode-toggle').checked = false;
+                document.getElementById('earthquake').value = 0;
+                
+                const fontSizeStyle = document.getElementById('page-adjuster-font-size');
+                if (fontSizeStyle) {
+                    fontSizeStyle.remove();
+                }
+                
+                document.documentElement.removeAttribute('data-page-adjuster');
+                
+                const computedSize = window.getComputedStyle(document.documentElement).fontSize;
+                const defaultSize = parseInt(computedSize);
+                const fontSlider = document.getElementById('fontsize');
+                fontSlider.value = defaultSize;
+                
+                applyFilters();
+                applyEarthquake();
+                saveSettings();
 
-            const sliders = document.querySelectorAll('input[type="range"]');
-            sliders.forEach(updateValueDisplay);
-        });
+                const sliders = document.querySelectorAll('input[type="range"]');
+                sliders.forEach(updateValueDisplay);
+            });
+        }
         
-        $(document).on('click', function(event) {
-            if (!$(event.target).closest('.page-adjuster-control').length && 
-                $('.page-adjuster-panel').is(':visible')) {
-                $('.page-adjuster-panel').hide();
+        // REPLACED $(document).on('click')
+        document.addEventListener('click', function(event) {
+            const panel = document.querySelector('.page-adjuster-panel');
+            // Check if click is outside .page-adjuster-control
+            // REPLACED !$(event.target).closest('.page-adjuster-control').length
+            if (!event.target.closest('.page-adjuster-control') && 
+                panel && window.getComputedStyle(panel).display !== 'none') {
+                panel.style.display = 'none';
             }
         });
-    });
-})(jQuery);
+});
