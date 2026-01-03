@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 // Add the control panel HTML and required scripts/styles
 function page_adjuster_enqueue_assets() {
     wp_enqueue_style('page-adjuster-styles', plugins_url('css/style.css', __FILE__));
-    wp_enqueue_script('page-adjuster-script', plugins_url('js/script.js', __FILE__), array(''), '2.0', array(
+    wp_enqueue_script('page-adjuster-script', plugins_url('js/script.js', __FILE__), '', '2.0', array(
 		'in_footer' => true,
 		'strategy'  => 'defer'
 	)
