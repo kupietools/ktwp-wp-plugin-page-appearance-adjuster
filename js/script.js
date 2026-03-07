@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadSettings() {
-        const settings = JSON.parse(localStorage.getItem('pageAdjusterSettings') || '{}');
+        const settings = JSON.parse(localStorage.getItem('ktwp_paa_pageAdjusterSettings') || '{}');
         
         const defaults = {
             brightness: "100",
@@ -46,7 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
             settings.darkMode === defaults.darkMode &&
             (!settings.fontSize || settings.fontSize === defaults.fontSize) &&
             settings.earthquake === defaults.earthquake) {
-                
+			//saved settings match defaults
+
             document.getElementById('brightness').value = defaults.brightness;
             document.getElementById('saturation').value = defaults.saturation;
             document.getElementById('contrast').value = defaults.contrast;
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+		
         document.getElementById('brightness').value = settings.brightness || defaults.brightness;
         document.getElementById('contrast').value = settings.contrast || defaults.contrast;
         document.getElementById('saturation').value = settings.saturation || defaults.saturation;
@@ -76,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         applyFontSize();
         applyEarthquake();
 
-        const sliders = document.querySelectorAll('input[type="range"]');
+        const sliders = document.querySelectorAll('#ktwp-paa-page-adjuster-panel > .panel-content > .control-group > input[type="range"]');
         sliders.forEach(updateValueDisplay);
     }
 
@@ -89,9 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
             hue: document.getElementById('hue').value,
             darkMode: document.getElementById('darkmode-toggle').checked,
             fontSize: document.getElementById('fontsize').value,
-            earthquake: document.getElementById('earthquake').value
+            earthquake: document.getElementById('earthquake').value,
+			savedAt: Date.now()
         };
-        localStorage.setItem('pageAdjusterSettings', JSON.stringify(settings));
+        localStorage.setItem('ktwp_paa_pageAdjusterSettings', JSON.stringify(settings));
     }
 
     function applyFontSize() {
@@ -240,11 +243,23 @@ function applyFilters() {
 
 }
 
-	function applyEarthquake() {
+function resetEarthquake(){
+	document.getElementById('earthquake').value="0";
+	applyEarthquake();
+	saveSettings();
+	document.getElementById('ktwp-paa-earthquake-killswitch').remove();
+	const slider = document.querySelector('#ktwp-paa-page-adjuster-panel > .panel-content > .control-group > input#earthquake[type="range"]');
+	updateValueDisplay(slider);
+
+	
+}
+
+function applyEarthquake() {
     const intensity = document.getElementById('earthquake').value;
     const style = document.getElementById('earthquake-style') || document.createElement('style');
     style.id = 'earthquake-style';
-
+  
+	
     // Always ensure the style tag exists and has the base keyframes
     if (!style.parentElement) {
         document.head.appendChild(style);
@@ -268,11 +283,27 @@ function applyFilters() {
                 -webkit-animation: earthquake 0.25s infinite;
                 will-change: transform;
             }
+
+           #ktwp-paa-earthquake-killswitch {
+	text-align: center;
+	width: 350px;
+	position: fixed;
+	bottom: 15px;
+	left: 15px;
+	opacity: .8;
+	background: white;
+	border: 1px solid #FF6666;
+	border-radius: 6px;
+	padding: 4px;
+	font-size: .9em;
+z-index:99999;
+}
+           #ktwp-paa-earthquake-killswitch:hover {opacity:1;font-size:1em;}
         `;
     }
 
-    const animatedParents = document.querySelectorAll('body > *:not(.page-adjuster-control):not(.temperatureOverlay)');
-    const animatedChildren = document.querySelectorAll('body > *:not(.page-adjuster-control):not(.temperatureOverlay) > *');
+    const animatedParents = document.querySelectorAll('body > *:not(.page-adjuster-control):not(.temperatureOverlay):not(#ktwp-paa-earthquake-killswitch)');
+    const animatedChildren = document.querySelectorAll('body > *:not(.page-adjuster-control):not(.temperatureOverlay):not(#ktwp-paa-earthquake-killswitch) > *');
 
     if (intensity === "0") {
         // Clear properties and classes
@@ -282,6 +313,17 @@ function applyFilters() {
         animatedParents.forEach(el => el.classList.remove('do-earthquake-parent'));
         animatedChildren.forEach(el => el.classList.remove('do-earthquake-child'));
     } else {
+		
+		const killswitch = document.getElementById('ktwp-paa-earthquake-killswitch') || document.createElement('div');
+    
+	killswitch.id = 'ktwp-paa-earthquake-killswitch';
+  
+	if (!killswitch.parentElement && intensity != "0") { 
+killswitch.innerHTML = `&#xe252 Earthquake is active. <a href="#">Turn Earthquake off</a>`; // would rather make this "open settings" but I'm tired right now
+document.body.appendChild(killswitch);
+killswitch.addEventListener('click', resetEarthquake);} 
+		
+		
         const shake = (Math.max(Math.log10(intensity),0)) ** 15 * 16;
         document.documentElement.style.setProperty('--shake-x', `${shake}px`);
         document.documentElement.style.setProperty('--shake-y', `${shake}px`);
@@ -386,8 +428,7 @@ body > *:not(.page-adjuster-control)  {
                 if(panel) panel.style.display = 'none';
             });
         }
-        
-        const sliders = document.querySelectorAll('input[type="range"]');
+        const sliders = document.querySelectorAll('#ktwp-paa-page-adjuster-panel > .panel-content > .control-group > input[type="range"]');
         sliders.forEach(function(slider) {
             ['change', 'input'].forEach(function(event) {
                 slider.addEventListener(event, function() {
@@ -444,7 +485,7 @@ body > *:not(.page-adjuster-control)  {
                 applyEarthquake();
                 saveSettings();
 
-                const sliders = document.querySelectorAll('input[type="range"]');
+                const sliders = document.querySelectorAll('#ktwp-paa-page-adjuster-panel > .panel-content > .control-group > input[type="range"]');
                 sliders.forEach(updateValueDisplay);
             });
         }
