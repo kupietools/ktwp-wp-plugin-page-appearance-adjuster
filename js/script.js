@@ -246,11 +246,10 @@ function applyFilters() {
 function resetEarthquake(){
 	document.getElementById('earthquake').value="0";
 	applyEarthquake();
-	saveSettings();
-	document.getElementById('ktwp-paa-earthquake-killswitch').remove();
+	saveSettings(); 
 	const slider = document.querySelector('#ktwp-paa-page-adjuster-panel > .panel-content > .control-group > input#earthquake[type="range"]');
 	updateValueDisplay(slider);
-
+/* alert("Earthquake subsided. Use the gear icon tab at left to open the Page Appearance Adjuster if you wish to restart it."); nah, that's annoying. Let's just leave them wondering, if they don't understand how it started. */
 	
 }
 
@@ -286,19 +285,24 @@ function applyEarthquake() {
 
            #ktwp-paa-earthquake-killswitch {
 	text-align: center;
-	width: 350px;
+	/* width: 350px; */
 	position: fixed;
 	bottom: 15px;
 	left: 15px;
-	opacity: .8;
+	opacity: .95;
 	background: white;
 	border: 1px solid #FF6666;
 	border-radius: 6px;
 	padding: 4px;
 	font-size: .9em;
 z-index:99999;
+box-shadow: 5px 5px 15px rgba(0,0,0,.13);
 }
-           #ktwp-paa-earthquake-killswitch:hover {opacity:1;font-size:1em;}
+           #ktwp-paa-earthquake-killswitch:hover {opacity:1;}
+#ktwp-paa-earthquake-killswitch-link  {color:blue; cursor:pointer;}
+#ktwp-paa-earthquake-killswitch:hover > #ktwp-paa-earthquake-killswitch-link {text-decoration:underline;}
+.first[style*="display:none"] + .second { display: block; }
+#page-adjuster-control:has(> #ktwp-paa-page-adjuster-panel[style*="block"])~#ktwp-paa-earthquake-killswitch {display:none !important;  /* only show when main control panel is hidden, with pure css. Aren't I clever? */}
         `;
     }
 
@@ -312,18 +316,26 @@ z-index:99999;
         document.documentElement.style.removeProperty('--shake-deg');
         animatedParents.forEach(el => el.classList.remove('do-earthquake-parent'));
         animatedChildren.forEach(el => el.classList.remove('do-earthquake-child'));
+		const killswitch = document.getElementById('ktwp-paa-earthquake-killswitch');
+		if (killswitch) {	killswitch.remove(); }
     } else {
 		
 		const killswitch = document.getElementById('ktwp-paa-earthquake-killswitch') || document.createElement('div');
     
 	killswitch.id = 'ktwp-paa-earthquake-killswitch';
-  
-	if (!killswitch.parentElement && intensity != "0") { 
-killswitch.innerHTML = `&#xe252 Earthquake is active. <a href="#">Turn Earthquake off</a>`; // would rather make this "open settings" but I'm tired right now
+
+	if (!killswitch.parentElement && intensity != "0" && document.getElementById("ktwp-paa-page-adjuster-panel").style.display != "none") { 
+killswitch.innerHTML = `<div id="ktwp-paa-earthquake-killswitch"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="32" height="32">
+
+ <g>
+  <path id="svg_1" d="m25.89733,17.18561c-0.4399,0 -0.84555,0.30697 -1.05139,0.79725l-1.71142,4.06947l-2.10881,-7.79595c-0.16112,-0.58913 -0.59151,-0.99256 -1.08565,-1.01417c-0.5081,-0.01841 -0.9461,0.34379 -1.1383,0.91731l-1.44658,4.33602l-2.28358,-17.26083c-0.10466,-0.7252 -0.64352,-1.27591 -1.19571,-1.23229c-0.58453,0.01681 -1.07328,0.50108 -1.15288,1.23229l-2.01621,20.03198l-1.6353,-10.7516c-0.0961,-0.63596 -0.50555,-1.12183 -1.01524,-1.20467c-0.50016,-0.08405 -1.00287,0.25414 -1.22488,0.83926l-2.67527,7.03593l-4.15611,0l0,3.00048l4.90525,0c0.45766,0 0.8741,-0.33019 1.07233,-0.85208l1.43865,-3.78211l2.3191,15.24771c0.10752,0.70879 0.59848,1.21708 1.16779,1.21708l0.03172,0c0.58231,-0.01961 1.06789,-0.56872 1.14686,-1.29713l1.98513,-19.68378l1.66415,12.96123c0.09357,0.65277 0.5173,1.15104 1.03903,1.22348c0.52966,0.06444 1.02222,-0.29696 1.22647,-0.9105l1.78721,-5.35259l1.98862,7.3477c0.15319,0.56471 0.55916,0.96334 1.0311,1.01016c0.47384,0.03322 0.92294,-0.26374 1.14591,-0.79324l2.66353,-6.33553l5.10443,0l0,-3.00088l-5.81995,0z" fill="red" stroke="null"></path>
+ </g>
+</svg><br><b>WARNING</b><br>Magnitude <span id="ktwp-paa-earthquake-intensity">0.0</span> Earthquake in progress<br><span id="ktwp-paa-earthquake-killswitch-link" href="#">Turn Earthquake off</a></div>`/*`&#xe252 Earthquake is active. <a href="#">Turn Earthquake off</a>`*/; // would rather make this "open settings" but I'm tired right now
 document.body.appendChild(killswitch);
 killswitch.addEventListener('click', resetEarthquake);} 
 		
-		
+		document.getElementById('ktwp-paa-earthquake-intensity').innerHTML = intensity;
+
         const shake = (Math.max(Math.log10(intensity),0)) ** 15 * 16;
         document.documentElement.style.setProperty('--shake-x', `${shake}px`);
         document.documentElement.style.setProperty('--shake-y', `${shake}px`);
@@ -357,7 +369,10 @@ killswitch.addEventListener('click', resetEarthquake);}
     }
     return intensity;
 }
-	function XapplyEarthquakeBody() {
+	
+
+
+function XapplyEarthquakeBody() {
     const intensity = document.getElementById('earthquake').value;
 	const style = document.getElementById('earthquake-style')||document.createElement('style');
     style.id = 'earthquake-style';
