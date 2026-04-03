@@ -514,5 +514,13 @@ body > *:not(.page-adjuster-control)  {
                 panel && window.getComputedStyle(panel).display !== 'none') {
                 panel.style.display = 'none';
             }
+		
         });
+	let ktwpparams = new URLSearchParams(document.location.search);
+let ktwp_param = ktwpparams.get("kupietools");
+			
+if (ktwp_param="paa")
+			{	
+
+document.querySelector('.page-adjuster-panel').style.display="block";}
 });
