@@ -518,9 +518,9 @@ body > *:not(.page-adjuster-control)  {
         });
 	let ktwpparams = new URLSearchParams(document.location.search);
 let ktwp_param = ktwpparams.get("kupietools");
-			
+			console.log("paa",ktwpparams);
 if (ktwp_param=="paa")
 			{	
-
+console.log("Paa true",ktwp_param,ktwp_param=="paa");
 document.querySelector('.page-adjuster-panel').style.display="block";}
 });
