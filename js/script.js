@@ -519,7 +519,7 @@ body > *:not(.page-adjuster-control)  {
 	let ktwpparams = new URLSearchParams(document.location.search);
 let ktwp_param = ktwpparams.get("kupietools");
 			
-if (ktwp_param="paa")
+if (ktwp_param=="paa")
 			{	
 
 document.querySelector('.page-adjuster-panel').style.display="block";}
