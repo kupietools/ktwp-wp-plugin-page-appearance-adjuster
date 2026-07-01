@@ -125,7 +125,7 @@ overflow-y: auto;
              margin: 0 0 !important; /* was 10px 0 */
         }
 
-.overflowxhidden {overflow-x:hidden;}
+.overflowxhidden {overflow-x:hidden;overflow-y:hidden; /* class is added during earthquake to prevent extra scrollbars from appearing. Yes, this is the same as overflowLhidden, but leaving it this way for code clarity. */}
 
 
 .page-adjuster-control {
