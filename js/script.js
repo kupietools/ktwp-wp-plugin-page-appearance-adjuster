@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 		let earthquakeTimeout;
-	    let earthquakeTimer=Date.now()
+	    let earthquakeTimer=Date.now();
     loadSettings();
    
 
@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         const computedSize = window.getComputedStyle(document.documentElement).fontSize;
+    console.log("Computed font size",computedSize);
         const initialSize = parseInt(computedSize);
         defaults.fontSize = String(initialSize);
 
@@ -265,10 +266,10 @@ function applyEarthquake() {
         // Define base keyframes with CSS variables (only once)
         style.innerHTML = `
             @keyframes earthquake {
-                0%, 100% { transform: translate(0, 0) rotate(0deg); transform-origin: 50vw 200vh; }
-                25% { transform: translate(calc(var(--shake-x) * -1), var(--shake-y)) rotate(var(--shake-deg)); transform-origin: 50vw 200vh;}
-                50% { transform: translate(var(--shake-x), calc(var(--shake-y) * -1)) rotate(calc(var(--shake-deg) * -1)); transform-origin: 50vw 200vh; }
-                75% { transform: translate(calc(var(--shake-x) * -1), calc(var(--shake-y) * -1)) rotate(var(--shake-deg)); transform-origin: 50vw 200vh;}
+                0%, 100% { transform: translate(0, 0) rotate(0deg); }
+                25% { transform: translate(calc(var(--shake-x) * -1), var(--shake-y)) rotate(var(--shake-deg)); }
+                50% { transform: translate(var(--shake-x), calc(var(--shake-y) * -1)) rotate(calc(var(--shake-deg) * -1)); }
+                75% { transform: translate(calc(var(--shake-x) * -1), calc(var(--shake-y) * -1)) rotate(var(--shake-deg)); }
             }
 
             /* No 'animation' property here directly, we'll set it inline or via a specific class */
@@ -276,6 +277,7 @@ function applyEarthquake() {
                 animation: earthquake 0.83s infinite;
                 -webkit-animation: earthquake 0.83s infinite;
                 will-change: transform;
+                transform-origin: 50vw 200vh;
             }
             .do-earthquake-child {
                 animation: earthquake 0.25s infinite;
@@ -306,8 +308,26 @@ box-shadow: 5px 5px 15px rgba(0,0,0,.13);
         `;
     }
 
-    const animatedParents = document.querySelectorAll('body > *:not(.page-adjuster-control):not(.temperatureOverlay):not(#ktwp-paa-earthquake-killswitch)');
-    const animatedChildren = document.querySelectorAll('body > *:not(.page-adjuster-control):not(.temperatureOverlay):not(#ktwp-paa-earthquake-killswitch) > *');
+   const excludedTags = ['SCRIPT', 'STYLE', 'TEMPLATE', 'NOSCRIPT', 'META', 'LINK'];
+const animatedParents = Array.from(document.querySelectorAll('body > *:not(.page-adjuster-control):not(.temperatureOverlay):not(#ktwp-paa-earthquake-killswitch)'))
+        .filter(el => !excludedTags.includes(el.tagName));
+    
+  /* no, less performant...  const animatedChildren = document.querySelectorAll('body > *:not(.page-adjuster-control):not(.temperatureOverlay):not(#ktwp-paa-earthquake-killswitch) > *'); */
+
+/* first suggestion was this, but doesn't exclude excludedTags const animatedChildren = [];
+animatedParents.forEach(parent => {
+    animatedChildren.push(...parent.children); // or querySelectorAll('*') if you need all descendants
+}); */
+
+
+    const animatedChildren = [];
+    animatedParents.forEach(parent => {
+        Array.from(parent.children).forEach(child => {
+            if (!excludedTags.includes(child.tagName)) {
+                animatedChildren.push(child);
+            }
+        });
+    });
 
     if (intensity === "0") {
         // Clear properties and classes
@@ -384,10 +404,10 @@ function XapplyEarthquakeBody() {
         const shake = (Math.max(Math.log10(intensity),0)) ** 15 * 16;//Math.log10(intensity) ** 8 * 6;//intensity * 0.3;
         style.innerHTML = `
             @keyframes earthquake {
-                0%, 100% { transform: translate(0, 0) rotate(0deg); transform-origin: 50vw 200vh; }
-                25% { transform: translate(-${shake}px, ${shake}px) rotate(${shake}deg);  transform-origin: 50vw 200vh;}
-                50% { transform: translate(${shake}px, -${shake}px) rotate(-${shake}deg); transform-origin: 50vw 200vh; }
-                75% { transform: translate(-${shake}px, -${shake}px) rotate(${shake}deg);  transform-origin: 50vw 200vh;}
+                0%, 100% { transform: translate(0, 0) rotate(0deg); }
+                25% { transform: translate(-${shake}px, ${shake}px) rotate(${shake}deg); }
+                50% { transform: translate(${shake}px, -${shake}px) rotate(-${shake}deg); }
+                75% { transform: translate(-${shake}px, -${shake}px) rotate(${shake}deg); }
             }
 
             body > *:not(.page-adjuster-control) > * {

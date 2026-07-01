@@ -53,7 +53,7 @@ function page_adjuster_add_control_panel() {
                     <input type="range" id="temperature" min="-50" max="50" value="0">
                 </div>
 				<div class="control-group">
-					<label for="hue">Hue Rotation <span class="value">0째</span></label>
+					<label for="hue">Hue Rotation <span class="value">0°</span></label>
     <input type="range" id="hue" min="0" max="360" value="0">
     
 </div><div class="control-group">
@@ -63,7 +63,7 @@ function page_adjuster_add_control_panel() {
 </div>
 				<div class="control-group">
     <label for="fontsize">Font Size <span class="value"></span></label>
-    <input type="range" id="fontsize" min="7" max="40" step="1">
+    <input type="range" id="fontsize" min="7" max="65" step="1" value="65"><!-- setting the default to max is a kludge. The scripts that set larger fonts for very big screens max out at this default value. Really, 65 would cover it better, but this is good enough. -->
    
 </div>
 				<div class="setting-row">
